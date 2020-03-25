@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDV", "RDV.csproj", "{A409FAA5-895A-43BC-B254-6778DF1AE1E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDV", "RDV.csproj", "{A409FAA5-895A-43BC-B254-6778DF1AE1E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "..\Models\Models.csproj", "{362A4C90-0739-463A-A42E-B9099B335719}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContexBinds", "..\ContexBinds\ContexBinds.csproj", "{C18D82DE-9B0F-4050-B8E3-2704039B84EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "..\BLL\BLL.csproj", "{FB79D5F5-5860-41EF-BA3C-B27CFC40C58C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{A409FAA5-895A-43BC-B254-6778DF1AE1E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A409FAA5-895A-43BC-B254-6778DF1AE1E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A409FAA5-895A-43BC-B254-6778DF1AE1E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{362A4C90-0739-463A-A42E-B9099B335719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{362A4C90-0739-463A-A42E-B9099B335719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{362A4C90-0739-463A-A42E-B9099B335719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{362A4C90-0739-463A-A42E-B9099B335719}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C18D82DE-9B0F-4050-B8E3-2704039B84EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C18D82DE-9B0F-4050-B8E3-2704039B84EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C18D82DE-9B0F-4050-B8E3-2704039B84EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C18D82DE-9B0F-4050-B8E3-2704039B84EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB79D5F5-5860-41EF-BA3C-B27CFC40C58C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB79D5F5-5860-41EF-BA3C-B27CFC40C58C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB79D5F5-5860-41EF-BA3C-B27CFC40C58C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB79D5F5-5860-41EF-BA3C-B27CFC40C58C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

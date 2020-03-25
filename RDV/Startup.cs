@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BLL.Admin.Interfaces;
+using BLL.Admin.Services;
+using ContexBinds.EntityCore;
+using ContextBinds;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RDV.Data;
+
 
 namespace RDV
 {
@@ -26,9 +25,32 @@ namespace RDV
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            //ApplicationDbContext - Contexto de controle de login
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                              
+                options.UseSqlServer(ConecxaoAtiva.StringConnection());
+            },
+                ServiceLifetime.Scoped
+            );
+
+            //DbContext - Usado para a persistência dos DAL
+            services.AddDbContext<ContextBind>(options =>
+            {
+                options.UseSqlServer(ConecxaoAtiva.StringConnection());
+            },
+               ServiceLifetime.Scoped
+           );
+
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+         
+            #region Injeções de Dependencia
+            services.AddScoped<ILoginService,LoginServices>();
+            #endregion
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

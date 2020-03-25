@@ -1,0 +1,39 @@
+﻿@page "/loginForm"
+@using Models.Admin
+@inject BLL.Admin.Interfaces.ILoginService LoginService
+
+
+
+<div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
+    <div class="border rounded p-5">
+        <div class="col col-12">
+            <h2>Credenciais para acesso</h2>
+        </div>
+        <hr />
+        <p>Insira seus dados para ter acesso ao sistema.</p>
+        <div class="input-group mb-3">
+            <input type="text" placeholder="Digite seu login de acesso" class="form-control" @bind-value="Login.LoginName" />
+        </div>
+        <div class="input-group mb-3">
+            <input type="password" placeholder="Digite sua senha" class="form-control" @bind-value="Login.Senha" />
+
+        </div>
+        <br />
+
+        <input type="submit" value="Acessar" class="btn btn-primary btn-block" @onclick="EfetuarLogin" />
+        <div id="alertaAmbiente">
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    private Login Login = new Login();
+
+    private void EfetuarLogin()
+    {
+        LoginService.Validate(Login);
+    }
+
+}
