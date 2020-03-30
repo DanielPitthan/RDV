@@ -22,7 +22,6 @@ namespace BLL.Admin.Services
                     byte[] encrypted = EncryptStringToBytes(normalText, rijndael.Key, rijndael.IV);
                     var hashedText = Encoding.ASCII.GetString(encrypted);
                     return hashedText;
-
                 }
             }
             catch (Exception e)
@@ -34,7 +33,7 @@ namespace BLL.Admin.Services
 
         public static bool Validate(string nomalText, string hashedText)
         {
-            var textHashed = CryptographyText(nomalText);
+            var textHashed = CryptographyText(nomalText);            
             return textHashed == hashedText;
         }
 

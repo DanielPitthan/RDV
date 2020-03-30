@@ -8,8 +8,11 @@ namespace ContexBinds.EntityCore
 {
     public class ContextBind : DbContext
     {
-        DbSet<Login> Login { get; set; }
-
+        public DbSet<Usuario> Usuario { get; set; }
+        public DbSet<UserToken> UserToken { get; set; }
+        public DbSet<UserClaims> UserClaims { get; set; }
+        public DbSet<Empresa> Empresa { get; set; }
+        public DbSet<EmpresaRegra> EmpresaRegra { get; set; }
         public ContextBind(DbContextOptions<ContextBind> options) : base(options) { }
     }
 }

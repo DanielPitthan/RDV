@@ -19,6 +19,8 @@ namespace BLL.Admin.Services
         public Task<bool> Validate(Login login)
         {
             CryptographyHelper.CryptographyText(login.Senha);
+
+
             return Task<bool>.FromResult(true);
         }
     }
