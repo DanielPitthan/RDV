@@ -101,16 +101,18 @@ namespace RDV
             services.AddServerSideBlazor();
          
             #region Injeções de Dependencia
-            services.AddScoped<ILoginService,LoginServices>();
+           
             services.AddScoped<IUsuarioDAO, UsuarioDAO>();
             services.AddScoped<IUserClaimDAO, UserClaimDAO>();
             services.AddScoped<IEmpresaDAO, EmpresaDAO>();
             services.AddScoped<IEmpresaRegraDAO, EmpresaRegraDAO>();
+            services.AddScoped<IUserTokenDAO, UserTokenDAO>();
 
             services.AddScoped<IUsuarioBLL, UsuarioBLL>();
             services.AddScoped<ITokenGeradorBLL, TokenGeradorBLL>();
             services.AddScoped<IClaimsControleBLL, ClaimsControleBLL>();
             services.AddScoped<IEmpresaBLL, EmpresaBLL>();
+
             #endregion
 
             

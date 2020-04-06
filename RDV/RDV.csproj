@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Helpers\" />
     <Folder Include="Pages\Componentes\Buttons\" />
-    <Folder Include="Pages\Componentes\Alerts\" />
   </ItemGroup>
 
   <ItemGroup>

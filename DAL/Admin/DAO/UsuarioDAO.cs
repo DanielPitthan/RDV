@@ -22,9 +22,9 @@ namespace DAL.Admin.DAO
             this.contexto = context;
         }
 
-        public IList<Usuario> List()
+        public DbSet<Usuario> ListAll()
         {
-            var lista = contexto.Usuario.ToList();
+            var lista = contexto.Usuario;
             return lista;
 
         }
@@ -34,21 +34,21 @@ namespace DAL.Admin.DAO
         /// </summary>
         /// <param name="usuario"></param>
         /// <returns></returns>
-        public bool Save(Usuario usuario)
+        public async Task<bool> SaveAsync(Usuario usuario)
         {
-            contexto.Usuario.Add(usuario);
-            contexto.SaveChanges();
-            return true;
+            await contexto.Usuario.AddAsync(usuario);
+            var result = await contexto.SaveChangesAsync();
+            return result > 0;
         }
         /// <summary>
         /// Altera um usuário
         /// </summary>
         /// <param name="usuario">The usuario.</param>
-        public bool Update(Usuario usuario)
+        public async Task<bool> UpdateAsync(Usuario usuario)
         {
             contexto.Entry(usuario).State = EntityState.Modified;
-            contexto.SaveChanges();
-            return true;
+            var result = await contexto.SaveChangesAsync();
+            return result > 0;
         }
 
         /// <summary>
@@ -56,46 +56,44 @@ namespace DAL.Admin.DAO
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public bool UpdateToken(UserToken token)
-        {
+        public async Task<bool> UpdateToken(UserToken token)
+        {           
             this.contexto.Entry(token).State = EntityState.Modified;
-            this.contexto.SaveChanges();
-            return true;
+            var result = await contexto.SaveChangesAsync();
+            return result > 0;
         }
-
-
 
         /// <summary>
         /// Exclui um usuário
         /// </summary>
         /// <param name="usuario">The usuario.</param>
-        public bool Delete(Usuario usuario)
+        public async Task<bool> DeleteAsync(Usuario usuario)
         {
             contexto.Usuario.Remove(usuario);
-            contexto.SaveChanges();
-            return true;
+            var result = await contexto.SaveChangesAsync();
+            return result > 0;
         }
 
-        public Usuario GetById(int id)
+        public async Task<Usuario> GetByIdAsync(int id)
         {
 
-            Usuario usuario = contexto.Usuario
+            Usuario usuario =await  contexto.Usuario
                                     .Where(u => u.Id == id)
                                      .Include(u => u.UserToken)
                                      .Include(t => t.UserClaims)
                                      .Include(e => e.Empresa)
-                                    .SingleOrDefault();
+                                    .SingleOrDefaultAsync();
             return usuario;
         }
 
-        public Usuario GetByAspNetId(string id)
+        public async Task<Usuario> GetByAspNetIdAsync(string id)
         {
-            Usuario usuario = contexto.Usuario
+            Usuario usuario = await contexto.Usuario
                                     .Where(u => u.AspNetUsersId == id)
                                      .Include(u => u.UserToken)
                                      .Include(t => t.UserClaims)
                                      .Include(e => e.Empresa)
-                                    .SingleOrDefault();
+                                    .SingleOrDefaultAsync();
 
             return usuario;
         }
@@ -106,10 +104,10 @@ namespace DAL.Admin.DAO
         /// </summary>
         /// <param name="usuario"></param>
         /// <returns> bool</returns>
-        public bool LockUnlock(Usuario usuario, bool isLocked)
+        public async Task<bool> LockUnlock(Usuario usuario, bool isLocked)
         {
             usuario.Ativo = isLocked;
-            return this.Update(usuario);
+            return await this.UpdateAsync(usuario);
         }
 
 

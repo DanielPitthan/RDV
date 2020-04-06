@@ -25,8 +25,8 @@ namespace DAL.Admin.DAO
             try
             {
                 this._contexto.EmpresaRegra.Remove(regra);
-                this._contexto.SaveChanges();
-                return true;
+                var result = await this._contexto.SaveChangesAsync();
+                return result>0;
 
             }
             catch (DbUpdateException e)

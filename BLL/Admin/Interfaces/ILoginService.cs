@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Models.Admin;
+using Models.Admin.ModelView;
 
 namespace BLL.Admin.Interfaces
 {

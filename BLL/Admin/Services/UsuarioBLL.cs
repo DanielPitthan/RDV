@@ -28,12 +28,13 @@ namespace BLL.Admin.Services
         private IEmpresaRegraDAO _empresaRegraDAO;
 
         public UsuarioBLL(IUsuarioDAO usuarioDAO,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            IUserClaimDAO userClaim,
-            ITokenGeradorBLL tokenGeradorBLL,
-            IEmpresaDAO empresaDAO,
-            IEmpresaRegraDAO empresaRegraDAO)
+                            UserManager<ApplicationUser> userManager,
+                            SignInManager<ApplicationUser> signInManager,
+                            IUserClaimDAO userClaim,
+                            ITokenGeradorBLL tokenGeradorBLL,
+                            IEmpresaDAO empresaDAO,
+                            IEmpresaRegraDAO empresaRegraDAO
+                            )
         {
             this._usuarioDAO = usuarioDAO;
             this._userManager = userManager;
@@ -49,7 +50,7 @@ namespace BLL.Admin.Services
         /// </summary>
         /// <param name="registerUser"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> CriarUsuario(UserModelView registerUser)
+        public async Task<HttpResponse> CriarUsuario(Login registerUser)
         {
             //Cria o usuário
             var newUser = new ApplicationUser
@@ -78,11 +79,11 @@ namespace BLL.Admin.Services
                                                            .GetByEmpresaIdAsync(registerUser.IdEmpresa);
 
             IList<Claim> claimsPersonalizadas = EmpresaRegraFactory.GenerateByEmpresaRegraList(regrasEmpresa);
-            
+
 
             //Gera o Token
             UserTokenResult resultToken = await this._tokenGeradorBLL
-                                                    .GetTokenByEmail(registerUser.Email,claimsPersonalizadas);
+                                                    .GetTokenByEmail(registerUser.Email, claimsPersonalizadas);
 
             //Salva o usuário
             Usuario usuario = new Usuario()
@@ -97,7 +98,7 @@ namespace BLL.Admin.Services
                 LastAcess = DateTime.Now
             };
 
-            _usuarioDAO.Save(usuario);
+            await _usuarioDAO.SaveAsync(usuario);
 
             //Libera o usuário             
             await this.UnlockLockUser(registerUser.Email);
@@ -119,12 +120,23 @@ namespace BLL.Admin.Services
         /// </summary>
         /// <param name="userInfo"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> EfetuarLogin(UserModelView userInfo)
+        public async Task<HttpResponse> EfetuarLogin(Login userInfo)
         {
-            var result = await _signInManager.PasswordSignInAsync(userInfo.Email, userInfo.Password,
-                isPersistent: false, lockoutOnFailure: false);
-            //lockoutOnFailure - Bloqueio temporário em caso de inúmeras tentativas
-            var userCreated = await _userManager.FindByEmailAsync(userInfo.Email);
+
+            //Autentica o usuário
+            SignInResult result;
+            try
+            {
+                result = await _signInManager.PasswordSignInAsync(userInfo.Email, userInfo.Password,
+                                     isPersistent: false, lockoutOnFailure: false).ConfigureAwait(false);
+
+            }
+            catch (Exception ex)
+            {
+
+                return new HttpResponse() { statusText = ex.Message };
+            }
+
 
             //Validação se efetuou o login com sucesso
             if (!result.Succeeded)
@@ -133,11 +145,14 @@ namespace BLL.Admin.Services
                 {
                     Succeeded = result.Succeeded,
                     Message = new string[] { "Erro ao efetuar o login" },
-                    body = null,
+                    body = new string[] { "{succeeded:false}" },
                     statusText = "Login inválido"
 
                 };
             }
+
+            //Recupera o usuário
+            var userCreated = await _userManager.FindByEmailAsync(userInfo.Email);
 
             //Validação se o usuário não está block            
             if (userCreated.LockoutEnabled)
@@ -149,7 +164,7 @@ namespace BLL.Admin.Services
                     body = null,
                     statusText = "Login inválido"
                 };
-            }           
+            }
 
             IList<EmpresaRegra> regrasEmpresa = await this._empresaRegraDAO
                                                            .GetByEmpresaIdAsync(userInfo.IdEmpresa);
@@ -158,14 +173,26 @@ namespace BLL.Admin.Services
 
             //Gera o Token
             UserTokenResult resultToken = await this._tokenGeradorBLL
-                                                    .GetTokenByEmail(userInfo.Email, claimsPersonalizadas);    
+                                                    .GetTokenByEmail(userInfo.Email,  claimsPersonalizadas, userCreated);
 
             //Atualiza o usuário com o novo Token e Claims  
-            Usuario usuario = _usuarioDAO.GetByAspNetId(userCreated.Id);
-            resultToken.Token.Id = usuario.UserToken.Id;
+            Usuario usuario = await _usuarioDAO.GetByAspNetIdAsync(userCreated.Id);
 
-            _userClaim.UpdateClaims(resultToken.UserClaims);
-            _usuarioDAO.UpdateToken(resultToken.Token);
+
+            if (resultToken.UserClaims.Count > 0)
+            {
+                _userClaim.UpdateClaims(resultToken.UserClaims);
+            }
+
+
+            var userToken = this._tokenGeradorBLL
+                                        .ListAll()
+                                        .Where(x => x.UsuarioId == usuario.Id)
+                                        .SingleOrDefault();
+            userToken.Token = resultToken.Token.Token;
+            await _usuarioDAO.UpdateToken(userToken);
+
+            resultToken.succeeded = true;
 
             return new HttpResponse()
             {
@@ -182,11 +209,11 @@ namespace BLL.Admin.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<bool> ExcluirUsuario(UserModelView userInfo)
+        public async Task<bool> ExcluirUsuario(Login userInfo)
         {
             var userAspNet = await _userManager.FindByEmailAsync(userInfo.Email);
             await _userManager.DeleteAsync(userAspNet);
-            _usuarioDAO.Delete(_usuarioDAO.GetByAspNetId(userAspNet.Id));
+            await _usuarioDAO.DeleteAsync(await _usuarioDAO.GetByAspNetIdAsync(userAspNet.Id));
             return true;
         }
 
@@ -196,8 +223,10 @@ namespace BLL.Admin.Services
         /// <returns></returns>
         public async Task<IList<UsuarioJsonResult>> ListarUsuariosJson()
         {
+            IList<Usuario> usuarios = this._usuarioDAO.ListAll().ToList();
+
             var result = UsuarioFactory
-                          .GeraUsuarioJsonByList( this._usuarioDAO.List());
+                          .GeraUsuarioJsonByList(usuarios);
             return result;
         }
 
@@ -212,9 +241,9 @@ namespace BLL.Admin.Services
             IdentityResult result = await _userManager
                                          .SetLockoutEnabledAsync(userAspNet, !userAspNet.LockoutEnabled);
 
-            Usuario usuario = this._usuarioDAO.GetByAspNetId(userAspNet.Id);
+            Usuario usuario = await this._usuarioDAO.GetByAspNetIdAsync(userAspNet.Id);
 
-            _usuarioDAO.LockUnlock(usuario,!userAspNet.LockoutEnabled);
+            await _usuarioDAO.LockUnlock(usuario, !userAspNet.LockoutEnabled);
 
             if (result.Succeeded) return true;
 
@@ -228,8 +257,8 @@ namespace BLL.Admin.Services
         /// <returns></returns>
         public async Task<bool> UnlockLockUserById(int userId)
         {
-            var email = this._usuarioDAO.GetById(userId).Email;
-            return await UnlockLockUser(email);
+            var usuario = await this._usuarioDAO.GetByIdAsync(userId);
+            return await UnlockLockUser(usuario.Email);
         }
 
 

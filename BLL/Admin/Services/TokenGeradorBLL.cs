@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using BLL.Admin.Interfaces;
+using DAL.Admin.Interfaces;
 using Factorys.AccountFactorys;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -21,27 +23,53 @@ namespace BLL.AccountsBLL
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         
-        private readonly JWTAppSettings _jwtAppSettings;        
+        private readonly JWTAppSettings _jwtAppSettings;
+        private readonly IUserTokenDAO _userTokenDAO;
 
         public TokenGeradorBLL(UserManager<ApplicationUser> userManager,
                             SignInManager<ApplicationUser> signInManager,
-                            IOptions<JWTAppSettings> jwtAppSettings                                                   
+                            IOptions<JWTAppSettings> jwtAppSettings      ,
+                            IUserTokenDAO userTokenDAO
                             )
         {
             this._userManager = userManager;
             this._signInManager = signInManager;            
-            this._jwtAppSettings = jwtAppSettings.Value;            
+            this._jwtAppSettings = jwtAppSettings.Value;
+            this._userTokenDAO = userTokenDAO;
         }
 
-       /// <summary>
-       /// Gera o Token do usuário com base no Email
-       /// </summary>
-       /// <param name="email"></param>
-       /// <param name="claimsPersonalizadas"></param>
-       /// <returns></returns>
-        public async Task<UserTokenResult> GetTokenByEmail(string email,IList<Claim> claimsPersonalizadas=null)
+        public DbSet<UserToken> ListAll()
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            return this._userTokenDAO.ListAll();
+        }
+
+        public async Task<bool> AlterarTokenAsync(UserToken userToken)
+        {
+           return  await this._userTokenDAO.UpdateAsync(userToken);
+        }
+
+        public async Task<bool> ExcluirTokenAsync(UserToken userToken)
+        {
+            return await this._userTokenDAO.DeleteAsync(userToken);
+        }
+
+        public async  Task<bool> IncluirTokenAsync(UserToken userToken)
+        {
+            return await this._userTokenDAO.SaveAsync(userToken);
+        }
+        /// <summary>
+        /// Gera o Token do usuário com base no Email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="claimsPersonalizadas"></param>
+        /// <returns></returns>
+        public async Task<UserTokenResult> GetTokenByEmail(string email, IList<Claim> claimsPersonalizadas=null, ApplicationUser user = null)
+        {
+
+            if (user == null)
+            {
+                user = await _userManager.FindByEmailAsync(email);
+            }
 
             var identityClaims = new ClaimsIdentity();
 
@@ -87,6 +115,6 @@ namespace BLL.AccountsBLL
             return result;
         }
 
-       
+      
     }
 }

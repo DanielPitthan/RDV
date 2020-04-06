@@ -15,10 +15,10 @@ namespace BLL.Admin.Interfaces
         Task<IList<UsuarioJsonResult>> ListarUsuariosJson();
         Task<bool> UnlockLockUser(string email);
         Task<bool> UnlockLockUserById(int userId);
-        Task<HttpResponse> EfetuarLogin(UserModelView user);
+        Task<HttpResponse> EfetuarLogin(Login user);
 
-        Task<HttpResponse> CriarUsuario(UserModelView registerUser);
+        Task<HttpResponse> CriarUsuario(Login registerUser);
 
-        Task<bool> ExcluirUsuario(UserModelView registerUser);
+        Task<bool> ExcluirUsuario(Login registerUser);
     }
 }

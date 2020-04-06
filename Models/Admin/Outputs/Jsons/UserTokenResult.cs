@@ -9,5 +9,6 @@ namespace Models.Admin.Json.Outputs
 
         public virtual UserToken Token { get; set; }
         public virtual IList<UserClaims> UserClaims { get; set; }
+        public virtual bool succeeded { get; set; }
     }
 }

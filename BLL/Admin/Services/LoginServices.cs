@@ -1,6 +1,6 @@
 ﻿using BLL.Admin.Interfaces;
 using ContexBinds.EntityCore;
-using Models.Admin;
+using Models.Admin.ModelView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace BLL.Admin.Services
         }
         public Task<bool> Validate(Login login)
         {
-            CryptographyHelper.CryptographyText(login.Senha);
+            CryptographyHelper.CryptographyText(login.Password);
 
 
             return Task<bool>.FromResult(true);

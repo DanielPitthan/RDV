@@ -1,0 +1,16 @@
+﻿@page "/alert"
+
+<div class="@AlertClass">
+    <p>@Text</p>
+</div>
+
+@code {
+
+
+    [Parameter]
+    public string AlertClass { get; set; } = "alert";
+    [Parameter]
+    public string Text { get; set; }
+
+
+}

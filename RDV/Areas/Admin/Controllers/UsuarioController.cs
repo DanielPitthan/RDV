@@ -121,7 +121,7 @@ namespace RDV.Areas.Admin.Controllers
         /// <returns></returns>
         [HttpDelete("Excluir")]
         [Produces("application/json")]
-        public async Task<JsonResult> DeleteUser([FromBody] UserModelView registerUser)
+        public async Task<JsonResult> DeleteUser([FromBody] Login registerUser)
         {
             if (!ModelState.IsValid)
             {
@@ -142,7 +142,7 @@ namespace RDV.Areas.Admin.Controllers
         [HttpPost("Criar")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserModelView registerUser)
+        public async Task<ActionResult<UserToken>> CreateUser([FromBody] Login registerUser)
         {
             if (!ModelState.IsValid)
             {
@@ -166,7 +166,7 @@ namespace RDV.Areas.Admin.Controllers
         [Produces("application/json")]
         [AllowAnonymous]
 
-        public async Task<ActionResult<UserToken>> Login([FromBody] UserModelView login)
+        public async Task<ActionResult<UserToken>> Login([FromBody] Login login)
         {
             if (!ModelState.IsValid)
             {

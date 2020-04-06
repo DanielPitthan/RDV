@@ -1,4 +1,5 @@
-﻿using Models.Admin;
+﻿using Microsoft.EntityFrameworkCore;
+using Models.Admin;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,38 +10,38 @@ namespace DAL.Admin.Interfaces
 {
     public interface IUsuarioDAO
     {
-        IList<Usuario> List();
+        DbSet<Usuario> ListAll();
 
-        bool Save(Usuario usuario);
-        bool Delete(Usuario usuario);
-        bool Update(Usuario usuario);
+        Task<bool> SaveAsync(Usuario usuario);
+        Task<bool> DeleteAsync(Usuario usuario);
+        Task<bool> UpdateAsync(Usuario usuario);
 
         /// <summary>
         /// Faz o bloqueio de um usuário
         /// </summary>
         /// <param name="usuario"></param>
         /// <returns> bool</returns>
-        bool LockUnlock(Usuario usuario,bool isLocked);       
+        Task<bool> LockUnlock(Usuario usuario, bool isLocked);
 
         /// <summary>
         /// Retorna um usuário pelo o Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        Usuario GetById(int id);
+        Task<Usuario> GetByIdAsync(int id);
         /// <summary>
         /// Retorna um usuário pelo o Id do AspNet
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        Usuario GetByAspNetId(string id);
+        Task<Usuario> GetByAspNetIdAsync(string id);
 
         /// <summary>
         /// Atualiza um token atravéz da proc
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        bool UpdateToken(UserToken token);
+        Task<bool> UpdateToken(UserToken token);
 
         /// <summary>
         /// Retorna o usuário através da chave do token 

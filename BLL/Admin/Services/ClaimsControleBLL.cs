@@ -41,7 +41,7 @@ namespace BLL.AccountsBLL
         {
 
             var regras = base.GeraListaClaims(json);
-            var usuario = this._usuarioDAO.GetById(base.ListaDeClaims.FirstOrDefault().UserId);
+            var usuario = await this._usuarioDAO.GetByIdAsync(base.ListaDeClaims.FirstOrDefault().UserId);
 
             var aspNetUser = await this._userManager.FindByEmailAsync(usuario.Email);
 
@@ -62,7 +62,7 @@ namespace BLL.AccountsBLL
         public async Task<bool> ExcluirClaimsByJson(string json)
         {
             var regras = base.GeraListaClaims(json);
-            var usuario = this._usuarioDAO.GetById(base.ListaDeClaims.FirstOrDefault().UserId);
+            var usuario = await this._usuarioDAO.GetByIdAsync(base.ListaDeClaims.FirstOrDefault().UserId);
 
             var aspNetUser = await this._userManager.FindByEmailAsync(usuario.Email);
 
@@ -81,7 +81,7 @@ namespace BLL.AccountsBLL
         public async Task<bool> BloquearClaimsByJson(string json)
         {
             var listaDeClaims = base.GeraListaClaims(json);
-            var usuario = this._usuarioDAO.GetById(base.ListaDeClaims.FirstOrDefault().UserId);
+            var usuario = await this._usuarioDAO.GetByIdAsync(base.ListaDeClaims.FirstOrDefault().UserId);
             var listaDeUserClaims = base.GeraListaDeUserClaims(false);
 
             this._claimsDAO.UpdateClaims(listaDeUserClaims);
@@ -98,7 +98,7 @@ namespace BLL.AccountsBLL
         public async Task<bool> LiberarClaimsByJson(string json)
         {
             var regras = base.GeraListaClaims(json);
-            var usuario = this._usuarioDAO.GetById(base.ListaDeClaims.FirstOrDefault().UserId);
+            var usuario = await this._usuarioDAO.GetByIdAsync(base.ListaDeClaims.FirstOrDefault().UserId);
             var listaDeUserClaims = base.GeraListaDeUserClaims(true);
             this._claimsDAO.UpdateClaims(listaDeUserClaims);
 

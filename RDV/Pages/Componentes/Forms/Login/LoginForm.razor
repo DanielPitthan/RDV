@@ -1,7 +1,14 @@
 ﻿@page "/loginForm"
-@using Models.Admin
-@inject BLL.Admin.Interfaces.ILoginService LoginService
 
+
+
+@using Models.Admin.ModelView
+@using Models.Admin.Outputs.HttpResponses;
+@using RDV.Pages.Componentes.Alerts;
+
+@inject BLL.Admin.Interfaces.IUsuarioBLL usuarioBLL
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 
 <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
@@ -12,28 +19,65 @@
         <hr />
         <p>Insira seus dados para ter acesso ao sistema.</p>
         <div class="input-group mb-3">
-            <input type="text" placeholder="Digite seu login de acesso" class="form-control" @bind-value="Login.LoginName" />
+            <input type="text" placeholder="Digite seu login de acesso" class="form-control" @bind-value="Login.Email" />
         </div>
         <div class="input-group mb-3">
-            <input type="password" placeholder="Digite sua senha" class="form-control" @bind-value="Login.Senha" />
+            <input type="password" placeholder="Digite sua senha" class="form-control" @bind-value="Login.Password" />
 
         </div>
+        <div class="row">
+            <input type="submit" value="Acessar" class="btn btn-primary btn-block" @onclick="EfetuarLogin" />
+        </div>
         <br />
-
-        <input type="submit" value="Acessar" class="btn btn-primary btn-block" @onclick="EfetuarLogin" />
-        <div id="alertaAmbiente">
+        <div id="infoLogin" class="row">
+            
         </div>
     </div>
 </div>
-
+@loginControll
 
 @code {
 
     private Login Login = new Login();
 
-    private void EfetuarLogin()
+    private HttpResponse httpResponse;
+    private static string alertText;
+    private static string alertClass;
+    private string loginControll;
+
+
+    private async Task EfetuarLogin()
     {
-        LoginService.Validate(Login);
+
+
+        loginControll = await JSRuntime
+                                   .InvokeAsync<string>("loginControll.efetuarLogin", Login.Email, Login.Password, "https://localhost:44370/api/usuarios/login")
+                                   .ConfigureAwait(false);
+
+
+
+    }
+
+
+
+    [JSInvokable]
+    public static Task SetHttpResponseJS(bool succeeded, string statusText)
+    {
+        if (succeeded)
+        {
+            alertText = statusText;
+            alertClass = "alert alert-info";
+
+        }
+        else
+        {
+            alertText = statusText;
+            alertClass = "alert alert-danger";
+
+        }
+
+        return Task.FromResult<bool>(true);
     }
 
 }
+
