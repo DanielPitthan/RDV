@@ -13,6 +13,9 @@ namespace ContexBinds.EntityCore
         public DbSet<UserClaims> UserClaims { get; set; }
         public DbSet<Empresa> Empresa { get; set; }
         public DbSet<EmpresaRegra> EmpresaRegra { get; set; }
-        public ContextBind(DbContextOptions<ContextBind> options) : base(options) { }
+        public ContextBind(DbContextOptions<ContextBind> options) : base(options)
+        { 
+           
+        }
     }
 }

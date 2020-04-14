@@ -88,14 +88,23 @@ namespace DAL.Admin.DAO
 
         public async Task<Usuario> GetByAspNetIdAsync(string id)
         {
-            Usuario usuario = await contexto.Usuario
-                                    .Where(u => u.AspNetUsersId == id)
-                                     .Include(u => u.UserToken)
-                                     .Include(t => t.UserClaims)
-                                     .Include(e => e.Empresa)
+            try
+            {
+                var usuario = await contexto.Usuario.Where(u => u.AspNetUsersId == id)
+                                    .Include(u => u.UserToken)
+                                    .Include(t => t.UserClaims)
+                                    .Include(e => e.Empresa)                                    
                                     .SingleOrDefaultAsync();
+                return usuario;
 
-            return usuario;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+           
+
+            return new Usuario();
         }
 
 

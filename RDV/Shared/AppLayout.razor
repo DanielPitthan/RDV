@@ -1,0 +1,21 @@
+﻿@inherits LayoutComponentBase
+
+@using RDV.Pages.Menu.Views
+
+<div class="sidebar">
+    <NavMenuView />
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <a href="http://exceptionbrasil.com.br" target="_blank">Exception Brasil</a>
+    </div>
+
+    <div class="content px-4">
+        @Body
+    </div>
+</div>
+
+@code {
+
+}

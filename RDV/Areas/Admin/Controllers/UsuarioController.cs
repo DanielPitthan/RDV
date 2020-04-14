@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BLL.Admin.Interfaces;
+﻿using BLL.Admin.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Admin;
 using Models.Admin.ModelView;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDV.Areas.Admin.Controllers
 {
@@ -168,15 +169,24 @@ namespace RDV.Areas.Admin.Controllers
 
         public async Task<ActionResult<UserToken>> Login([FromBody] Login login)
         {
+         
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
             }
 
-            var resultado = await this._usuarioBLL.EfetuarLogin(login);
+            var loginResult = await this._usuarioBLL.EfetuarLogin(login);
+            this.HttpContext.Session.SetString("usuario", login.Email);
 
-            if (!resultado.Succeeded) return BadRequest(resultado.Message);
-            return Ok(resultado.body);
+            if (!loginResult.Succeeded)
+            {
+                return BadRequest(loginResult);
+            }
+            else
+            {
+              
+                return Ok(loginResult);
+            }
         }
     }
 }

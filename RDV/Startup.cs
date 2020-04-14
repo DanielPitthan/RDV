@@ -5,9 +5,11 @@ using ContexBinds.EntityCore;
 using ContextBinds;
 using DAL.Admin.DAO;
 using DAL.Admin.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +18,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Models.Admin;
 using Models.Admin.Settings;
+using RDV.Areas.Admin.Controllers;
+using System;
 using System.Text;
+
 
 namespace RDV
 {
@@ -37,7 +42,7 @@ namespace RDV
             //ApplicationDbContext - Contexto de controle de login
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                              
+
                 options.UseSqlServer(ConecxaoAtiva.StringConnection());
             },
                 ServiceLifetime.Scoped
@@ -51,7 +56,7 @@ namespace RDV
                ServiceLifetime.Scoped
            );
 
-            
+
 
             //Identity
             services.AddDefaultIdentity<ApplicationUser>()
@@ -87,6 +92,29 @@ namespace RDV
                 };
             });
 
+
+            //Habilita a autenticação via aplicação 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/loginView";
+                    options.LogoutPath = "/loginView";
+
+                });
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = "customScheme";
+            //    x.DefaultChallengeScheme = "customScheme";
+            //}).AddCookie("customScheme");
+
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(48);
+            });
+
+
             services.AddCors(options =>
             {
                 options.AddPolicy(SefOriginsRequest, builder =>
@@ -99,9 +127,12 @@ namespace RDV
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-         
+            services.AddHttpContextAccessor();
+
+      
             #region Injeções de Dependencia
-           
+            //   services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddScoped<IUsuarioDAO, UsuarioDAO>();
             services.AddScoped<IUserClaimDAO, UserClaimDAO>();
             services.AddScoped<IEmpresaDAO, EmpresaDAO>();
@@ -114,10 +145,6 @@ namespace RDV
             services.AddScoped<IEmpresaBLL, EmpresaBLL>();
 
             #endregion
-
-            
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -138,9 +165,10 @@ namespace RDV
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseAuthentication();        //Antes do MVC Sempre!
+         
 
-            //app.UseMvc();
+            app.UseAuthentication();        //Antes do MVC Sempre!
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

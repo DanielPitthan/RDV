@@ -1,4 +1,5 @@
-﻿using Models.Admin.Json;
+﻿using Models.Admin;
+using Models.Admin.Json;
 using Models.Admin.Json.Outputs;
 using Models.Admin.ModelView;
 using Models.Admin.Outputs;
@@ -20,5 +21,9 @@ namespace BLL.Admin.Interfaces
         Task<HttpResponse> CriarUsuario(Login registerUser);
 
         Task<bool> ExcluirUsuario(Login registerUser);
+     
+        Task<bool> UsuarioEstaLogado(Usuario usuario);
+        Task Logout(Usuario usuario);
+        Task<Usuario> GetUsuarioPeloEmail(string email);
     }
 }

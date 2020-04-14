@@ -71,7 +71,7 @@ namespace BLL.AccountsBLL
                 user = await _userManager.FindByEmailAsync(email);
             }
 
-            var identityClaims = new ClaimsIdentity();
+            var identityClaims = new ClaimsIdentity("CustomIdentity");
 
             //recupera as Claims do usuário 
             identityClaims.AddClaims(await _userManager.GetClaimsAsync(user));
@@ -109,7 +109,8 @@ namespace BLL.AccountsBLL
             UserTokenResult result = new UserTokenResult()
             {
                 Token = token,
-                UserClaims = claims
+                UserClaims = claims,
+                ClaimsIdentity = identityClaims
             };
             
             return result;
