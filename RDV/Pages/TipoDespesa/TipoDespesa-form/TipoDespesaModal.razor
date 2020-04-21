@@ -1,0 +1,135 @@
+﻿
+
+@inject ITipoDespesaService tipoDespesaService
+
+
+<div class="modal fade" id="@ModalId" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">@ModalTitulo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <LabelComponent aspfor="@nameof(TipoDespesa.Descricao)" TItem="TipoDespesa"></LabelComponent>
+                    <input type="text" class="form-control" @bind-value="TipoDespesa.Descricao" disabled="@disableForm" />
+                </div>
+                <div class="form-group">
+                    <LabelComponent aspfor="@nameof(TipoDespesa.Ativo)" TItem="TipoDespesa"></LabelComponent>
+                    <input type="checkbox" class="form-check-inline" @bind-value="TipoDespesa.Ativo" disabled="@disableForm" />
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" @onclick="ExecutarAcao" @onmouseup="OnClickCallBack" class="@cssBotao">@botaoTexto</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+
+    private TipoDespesa TipoDespesa = new TipoDespesa();
+
+    [Parameter]
+    public int? TipoDespesaId { get; set; }
+
+    [Parameter]
+    public Acao FormTipo { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallBack { get; set; }
+
+    [Parameter]
+    public string ModalId { get; set; }
+
+    [Parameter]
+    public string ModalTitulo { get; set; }
+
+    private string botaoTexto = "";
+    private string cssBotao = "";
+    private bool disableForm = false;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (TipoDespesaId != null)
+            TipoDespesa = await tipoDespesaService.GetByIdAsync(TipoDespesaId.Value);
+
+        await formatarModal();
+        this.StateHasChanged();
+    }
+
+
+
+    private async Task ExecutarAcao()
+    {
+        if (FormTipo == Acao.Alterar)
+            await EditarTipoDespesa();
+
+        if (FormTipo == Acao.Excluir)
+            await ExcluirTipoDespesa();
+
+        if (FormTipo == Acao.Incluir)
+            await IncluirTipoDespesa();
+
+
+    }
+
+
+    private async Task IncluirTipoDespesa()
+    {
+        TipoDespesa.DataInclusao = DateTime.Now;
+        await tipoDespesaService.CriarTipoDespesa(TipoDespesa);
+    }
+
+    private async Task EditarTipoDespesa()
+    {
+        await tipoDespesaService.AlterarTipoDespesa(TipoDespesa);
+    }
+
+    private async Task ExcluirTipoDespesa()
+    {
+        await tipoDespesaService.ExcluirTipoDespesa(TipoDespesa);
+    }
+
+    private async Task formatarModal()
+    {
+        if (FormTipo == Acao.Alterar)
+        {
+            botaoTexto = "Alterar";
+            cssBotao = "btn btn-warning";
+            disableForm = false;
+        }
+
+
+        if (FormTipo == Acao.Excluir)
+        {
+            botaoTexto = "Excluir";
+            cssBotao = "btn btn-danger";
+            disableForm = false;
+        }
+
+        if (FormTipo == Acao.Incluir)
+        {
+            botaoTexto = "Incluir";
+            cssBotao = "btn btn-primary";
+            disableForm = false;
+
+        }
+
+        if (FormTipo == Acao.Vizualizar)
+        {
+            botaoTexto = "Fechar";
+            cssBotao = "btn btn-info";
+            disableForm = true;
+        }
+
+    }
+}

@@ -25,5 +25,6 @@ namespace BLL.Admin.Interfaces
         Task<bool> UsuarioEstaLogado(Usuario usuario);
         Task Logout(Usuario usuario);
         Task<Usuario> GetUsuarioPeloEmail(string email);
+        Task<HttpResponse> CriarUsuarioSimplificado(Login registerUser);
     }
 }

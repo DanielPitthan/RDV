@@ -1,10 +1,15 @@
 using BLL.AccountsBLL;
 using BLL.Admin.Interfaces;
 using BLL.Admin.Services;
+using BLL.Despesas.Interfaces;
+using BLL.Despesas.Services;
+using BLL.Infra;
 using ContexBinds.EntityCore;
 using ContextBinds;
 using DAL.Admin.DAO;
 using DAL.Admin.Interfaces;
+using DAL.Despesas.DAO;
+using DAL.Despesas.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +26,6 @@ using Models.Admin.Settings;
 using RDV.Areas.Admin.Controllers;
 using System;
 using System.Text;
-
 
 namespace RDV
 {
@@ -62,9 +66,8 @@ namespace RDV
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>() //Provider para acesso 
-                .AddDefaultTokenProviders(); //Gerador de tokens aleatórios (Confirmação de e-mail) 
-
-
+                .AddDefaultTokenProviders() //Gerador de tokens aleatórios (Confirmação de e-mail) 
+                .AddErrorDescriber<CustomIdentityErrorDescriber>();//Translate de Identity to Pt-Br
 
             //JWT
             var appSettingsSection = Configuration.GetSection("JWTAppSettings");
@@ -101,12 +104,6 @@ namespace RDV
                     options.LogoutPath = "/loginView";
 
                 });
-            //services.AddAuthentication(x =>
-            //{
-            //    x.DefaultAuthenticateScheme = "customScheme";
-            //    x.DefaultChallengeScheme = "customScheme";
-            //}).AddCookie("customScheme");
-
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -128,23 +125,26 @@ namespace RDV
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddHttpContextAccessor();
-
-      
             #region Injeções de Dependencia
             //   services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<IUsuarioDAO, UsuarioDAO>();
+            services.AddScoped<IUsuarioBLL, UsuarioBLL>();
+
             services.AddScoped<IUserClaimDAO, UserClaimDAO>();
+            services.AddScoped<IClaimsControleBLL, ClaimsControleBLL>();
+
             services.AddScoped<IEmpresaDAO, EmpresaDAO>();
             services.AddScoped<IEmpresaRegraDAO, EmpresaRegraDAO>();
+            services.AddScoped<IEmpresaBLL, EmpresaBLL>();      
+
             services.AddScoped<IUserTokenDAO, UserTokenDAO>();
-
-            services.AddScoped<IUsuarioBLL, UsuarioBLL>();
             services.AddScoped<ITokenGeradorBLL, TokenGeradorBLL>();
-            services.AddScoped<IClaimsControleBLL, ClaimsControleBLL>();
-            services.AddScoped<IEmpresaBLL, EmpresaBLL>();
-
+                   
+            services.AddScoped<ITipoDespesaDAO, TipoDespesaDAO>();
+            services.AddScoped<ITipoDespesaService, TipoDespesaService>();
             #endregion
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -160,12 +160,12 @@ namespace RDV
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
             app.UseCors(SefOriginsRequest);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-         
+
 
             app.UseAuthentication();        //Antes do MVC Sempre!
             app.UseSession();

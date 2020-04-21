@@ -1,0 +1,77 @@
+﻿
+@inject BLL.Despesas.Interfaces.ITipoDespesaService tipoDespesaService
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Descrição</th>
+            <th>Ativo</th>
+            <th>Editar</th>            
+            <th>Excluir</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var despesa in Despesas)
+        {
+            <tr>
+                <td>@despesa.Id</td>
+                <td>@despesa.Descricao</td>
+                <td>@despesa.Ativo</td>
+                <td><button class="btn" data-toggle="modal" data-target="#ModalItens" @onclick="@(x=> Editar(despesa.Id))">
+                    <span class="iconify iconify-medium" data-icon="ic:baseline-edit" data-inline="false" ></span>
+                    </button>
+                </td>                              
+                <td>
+                    <button class="btn" data-toggle="modal" data-target="#ModalItens" @onclick="@(x=> Excluir(despesa.Id))">
+                        <span class="iconify iconify-medium" redicon" data-icon="ic:baseline-delete-forever" data-inline="false"></span>
+                    </button>
+                </td>              
+            </tr>
+        }
+    </tbody>
+</table>
+
+<TipoDespesaModal FormTipo="@AcaoModal" 
+                  TipoDespesaId="@tipoDespesaId" 
+                  OnClickCallBack="@AtualizarTela" 
+                  ModalId="ModalItens" 
+                  ModalTitulo="@tituloModal">
+
+</TipoDespesaModal>
+
+@code {
+
+    private Acao AcaoModal;
+    private int? tipoDespesaId;
+    private string tituloModal;
+
+    private IList<TipoDespesa> Despesas = new List<TipoDespesa>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Despesas = await tipoDespesaService.ListarTudo();
+        AcaoModal = Acao.Vizualizar;
+
+    }
+
+    private void AtualizarTela(MouseEventArgs e)
+    {
+        this.StateHasChanged();
+    }
+
+    private  void Excluir(int id)
+    {
+        AcaoModal = Acao.Excluir;
+        tipoDespesaId = id;
+        tituloModal = "Exclusão de registro";
+
+    }
+
+    private void Editar(int id)
+    {
+        AcaoModal = Acao.Alterar;
+        tipoDespesaId = id;
+        tituloModal = "Alteração de registro";
+    }
+}

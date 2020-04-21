@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 
 namespace RDV
 {
@@ -19,7 +20,11 @@ namespace RDV
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();          
+            CreateHostBuilder(args).Build().Run();
+            //CultureInfo ci = new CultureInfo("pt-br");
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+            //System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
+
 
         }
 

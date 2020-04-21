@@ -1,0 +1,32 @@
+﻿<div class="jumbotron-fluid  background-jumbotrom">
+    <div class="jumbotron-content">
+        <br>
+        <br>
+        <div class="row justify-content-lg-center">
+            <div class="font-30 white-text">@Titulo </div>
+        </div>
+        <div class="row justify-content-lg-center">
+            <div class="font-24  white-text"></div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="row justify-content-lg-center">
+            <button class="btn orange">@ButtonText</button>
+        </div>
+        <br>
+        <br>
+        <br>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Titulo { get; set; }
+    [Parameter]
+    public string SubTitulo { get; set; } 
+    [Parameter]
+    public string ButtonText { get; set; }
+
+
+}

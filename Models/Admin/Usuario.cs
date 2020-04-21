@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Models.Admin.ModelView;
 
 namespace Models.Admin
 {
@@ -11,16 +13,22 @@ namespace Models.Admin
     {
         [Key]
         public int Id { get; set; }
-       
+
+        [DisplayName("E-Mail")]
+        [Required]
         public string Email { get; set; }
       
+        [DisplayName("Nome")]
         public string Nome { get; set; }
-      
-        public string Password { get; set; }
 
+        [DisplayName("Senha")]
+        [Required]
+        [PasswordPropertyText]
+        public string Password { get; set; }
         
         public bool Ativo { get; set; }
-     
+
+        [DisplayName("CPF")]
         public string Cpf { get; set; }
 
         

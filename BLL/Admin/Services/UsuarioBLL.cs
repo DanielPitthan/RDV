@@ -46,6 +46,76 @@ namespace BLL.Admin.Services
             this._empresaRegraDAO = empresaRegraDAO;
         }
 
+
+
+
+
+        /// <summary>
+        /// Cria o usuário na Base
+        /// </summary>
+        /// <param name="registerUser"></param>
+        /// <returns></returns>
+        public async Task<HttpResponse> CriarUsuarioSimplificado(Login registerUser)
+        {
+            //Cria o usuário
+            var newUser = new ApplicationUser
+            {
+                UserName = registerUser.Email,
+                Email = registerUser.Email,
+                EmailConfirmed = true, //Envio de e-mail de confirmação - muda para false
+                LockoutEnabled = false
+            };
+
+            //Registra o usuário
+            var result = await _userManager.CreateAsync(newUser, registerUser.Password);          
+            var userCreated = await _userManager.FindByEmailAsync(registerUser.Email);
+
+            if (!result.Succeeded)
+            {
+                return new HttpResponse()
+                {
+                    Succeeded = result.Succeeded,
+                    Message = result.Errors.Select(e => e.Description),
+                    body = null
+                };
+            }
+
+            IList<EmpresaRegra> regrasEmpresa = await this._empresaRegraDAO
+                                                           .GetByEmpresaIdAsync(registerUser.IdEmpresa);
+
+            IList<Claim> claimsPersonalizadas = EmpresaRegraFactory.GenerateByEmpresaRegraList(regrasEmpresa);
+
+
+            //Gera o Token
+            UserTokenResult resultToken = await this._tokenGeradorBLL
+                                                    .GetTokenByEmail(registerUser.Email, claimsPersonalizadas);
+
+            //Salva o usuário
+            Usuario usuario = new Usuario()
+            {
+                UserToken = resultToken.Token,
+                UserClaims = resultToken.UserClaims,
+                Email = registerUser.Email,
+                Password = userCreated.PasswordHash,
+                AspNetUsersId = userCreated.Id,
+                Ativo = true,
+                Empresa = this._empresaDAO.GetById(registerUser.IdEmpresa),
+                LastAcess = DateTime.Now
+            };
+
+            await _usuarioDAO.SaveAsync(usuario);
+
+            //Libera o usuário             
+            await this.UnlockLockUser(registerUser.Email);          
+
+            return new HttpResponse()
+            {
+                Succeeded = result.Succeeded,
+                Message = result.Errors.Select(e => e.Description),
+                body = usuario.UserToken
+            };
+        }
+
         /// <summary>
         /// Cria o usuário na Base
         /// </summary>

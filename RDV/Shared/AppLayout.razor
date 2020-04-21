@@ -1,9 +1,14 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Http
+@using BLL.Admin.Interfaces
+@using Models.Admin
 
-@using RDV.Pages.Menu.Views
+@inject IUsuarioBLL usuarioBLL
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor httpContextAccessor
 
 <div class="sidebar">
-    <NavMenuView />
+    <NavMenuViewComponent />
 </div>
 
 <div class="main">
@@ -17,5 +22,5 @@
 </div>
 
 @code {
-
+    
 }

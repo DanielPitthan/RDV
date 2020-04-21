@@ -1,0 +1,43 @@
+﻿@page "/tipoDespesa"
+
+
+@using RDV.Pages.TipoDespesa.TipoDespesa_list
+<div class="row">
+    <h3>Cadastro de tipos de despesas</h3>
+</div>
+<hr />
+<div class="row">
+    <button @onclick="Incluir" class="btn" data-toggle="modal" data-target="#ModalCabecalho"><span class="iconify" data-icon="ic:round-post-add" data-inline="false"></span>Novo tipo</button>
+</div>
+<br />
+
+
+<TipoDespesaList></TipoDespesaList>
+
+<TipoDespesaModal FormTipo="@AcaoModal" 
+                  TipoDespesaId="@tipoDespesaId"
+                  OnClickCallBack="@AtualizarTela" 
+                  ModalId="ModalCabecalho" 
+                  ModalTitulo="@tituloModal">
+
+</TipoDespesaModal>
+
+
+@code {
+    private Acao AcaoModal;
+    private int? tipoDespesaId;
+    private string tituloModal;
+
+    private void AtualizarTela(MouseEventArgs e)
+    {
+        this.StateHasChanged();
+    }
+
+    private void Incluir()
+    {
+        AcaoModal = Acao.Incluir;
+        tituloModal = "Inclusão de registro";
+    }
+
+
+}

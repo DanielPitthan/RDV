@@ -1,0 +1,87 @@
+﻿@page "/usuarioFormComponent"
+
+
+
+@inject IUsuarioBLL usuarioBLL
+
+
+
+
+<div class="rounded border p-5">
+    <div class="form-group">
+        <span class="oi oi-person" aria-hidden="true"></span> Nome Completo
+        <input type="text" class="form-control" @bind-value="Login.Nome" />
+    </div>
+    <div class="form-group">
+        <span class="oi oi-envelope-closed" aria-hidden="true"></span> E-Mail
+        <input type="text" class="form-control" @bind-value="Login.Email" />
+    </div>
+    <div class="form-group">
+        <span class="oi oi-key" aria-hidden="true"></span> Senha
+        <input type="password" class="form-control" @bind-value="Login.Password" />
+    </div>
+    <div class="form-group">
+        <span class="oi oi-key" aria-hidden="true"></span> Confirme sua senha
+        <input type="password" class="form-control" @bind-value="Login.ConfirmPassword" />
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="GravarUsuario">Começar</button>
+</div>
+<SmModalDangerComponent ModalBody="@retornoValidacao" ModalTitle="@tituloModal" ExecuteModal="true"></SmModalDangerComponent>
+
+@code {
+    private Login Login = new Login();
+
+
+    private string retornoValidacao;
+    private string tituloModal;
+    private string alertClass = "";
+
+
+    private async Task GravarUsuario()
+    {
+        retornoValidacao = null;
+        tituloModal = null;
+
+        if (!Validate(Login))
+        {
+            retornoValidacao = "Não foi informado o Nome, E-mail ou a senha ";
+            tituloModal = "Erro ao cadastrar o usuário";
+            return;
+        }
+
+
+        var httpResponse = await usuarioBLL.CriarUsuarioSimplificado(Login);
+        if (!httpResponse.Succeeded)
+        {
+            foreach (var msg in httpResponse.Message)
+            {
+                retornoValidacao += msg + "\n\r";
+            }
+            retornoValidacao += httpResponse.statusText;
+            tituloModal = "Erro ao cadastrar o usuário";
+
+        }
+
+
+    }
+
+
+
+
+    private bool Validate(Login login)
+    {
+        if (string.IsNullOrEmpty(login.Nome) || string.IsNullOrEmpty(login.ConfirmPassword) || string.IsNullOrEmpty(login.Email) || string.IsNullOrEmpty(login.Password))
+        {
+
+            return false;
+        }
+        if (!login.Password.Equals(login.ConfirmPassword))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+
+}

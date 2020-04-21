@@ -10,7 +10,7 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2 ;
+    background-color: #1b6ec2;
     border-color: #1861ac;
 }
 
@@ -188,11 +188,18 @@ app {
     width: 100%;
 }
 
-.backugroud-cliente {
+.background-cliente {
     background: linear-gradient(rgba(255,255,255,.8),rgba(255,255,255,.8)90%) 0 0/cover no-repeat,url(../_content/img/background/escritorio.jpg) 0 0/cover no-repeat;
     background-size: cover;
     background-position-y: center;
 }
+
+.background-jumbotrom {
+    background: linear-gradient(132deg, rgba(162,154,154,0.9) 0%, rgba(62,56,52,.9) 90%),url(../_content/img/background/background-tecnologies.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .font-8 {
     font-size: 8pt;
 }
@@ -215,6 +222,10 @@ app {
     font-size: 18pt;
 }
 
+.font-24 {
+    font-size: 24pt;
+}
+
 .font-26 {
     font-size: 26pt;
 }
@@ -234,6 +245,30 @@ app {
 .font-cliente {
     font-family: 'Kanit', sans-serif;
 }
-.imagem-cliente{
+
+.imagem-cliente {
     background-image: url(../_content/img/background/ASRlogo_white.svg);
+}
+
+.iconify {
+    line-height: 48px;
+    font-size: 36px;
+}
+
+.iconify-small {
+    line-height: 20px;
+    font-size: 16px;
+}
+
+.iconify-medium {
+    line-height: 26px;
+    font-size: 24px;
+}
+
+.iconify-redicon {
+    color: #f00;
+}
+
+.ocultar {
+    display: none;
 }
