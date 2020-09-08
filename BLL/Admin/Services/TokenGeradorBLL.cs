@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using BLL.Admin.Interfaces;
+﻿using BLL.Admin.Interfaces;
 using DAL.Admin.Interfaces;
 using Factorys.AccountFactorys;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models.Admin;
 using Models.Admin.Json.Outputs;
 using Models.Admin.Settings;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BLL.AccountsBLL
 {
@@ -22,18 +21,18 @@ namespace BLL.AccountsBLL
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        
+
         private readonly JWTAppSettings _jwtAppSettings;
         private readonly IUserTokenDAO _userTokenDAO;
 
         public TokenGeradorBLL(UserManager<ApplicationUser> userManager,
                             SignInManager<ApplicationUser> signInManager,
-                            IOptions<JWTAppSettings> jwtAppSettings      ,
+                            IOptions<JWTAppSettings> jwtAppSettings,
                             IUserTokenDAO userTokenDAO
                             )
         {
             this._userManager = userManager;
-            this._signInManager = signInManager;            
+            this._signInManager = signInManager;
             this._jwtAppSettings = jwtAppSettings.Value;
             this._userTokenDAO = userTokenDAO;
         }
@@ -45,7 +44,7 @@ namespace BLL.AccountsBLL
 
         public async Task<bool> AlterarTokenAsync(UserToken userToken)
         {
-           return  await this._userTokenDAO.UpdateAsync(userToken);
+            return await this._userTokenDAO.UpdateAsync(userToken);
         }
 
         public async Task<bool> ExcluirTokenAsync(UserToken userToken)
@@ -53,7 +52,7 @@ namespace BLL.AccountsBLL
             return await this._userTokenDAO.DeleteAsync(userToken);
         }
 
-        public async  Task<bool> IncluirTokenAsync(UserToken userToken)
+        public async Task<bool> IncluirTokenAsync(UserToken userToken)
         {
             return await this._userTokenDAO.SaveAsync(userToken);
         }
@@ -63,7 +62,7 @@ namespace BLL.AccountsBLL
         /// <param name="email"></param>
         /// <param name="claimsPersonalizadas"></param>
         /// <returns></returns>
-        public async Task<UserTokenResult> GetTokenByEmail(string email, IList<Claim> claimsPersonalizadas=null, ApplicationUser user = null)
+        public async Task<UserTokenResult> GetTokenByEmail(string email, IList<Claim> claimsPersonalizadas = null, ApplicationUser user = null)
         {
 
             if (user == null)
@@ -81,22 +80,22 @@ namespace BLL.AccountsBLL
             {
                 identityClaims.AddClaims(claimsPersonalizadas);
             }
-            
-            
+
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtAppSettings.Secret);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = identityClaims,                
+                Subject = identityClaims,
                 Issuer = _jwtAppSettings.Emissor,
-                Audience = _jwtAppSettings.ValidoEm,                
+                Audience = _jwtAppSettings.ValidoEm,
                 Expires = DateTime.UtcNow.AddHours(_jwtAppSettings.ExpiracaoHoras),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-            
-            var claims = UserClaimFactory.TransformInClaimByList(identityClaims.Claims as List<Claim>,true);
-           
+
+            var claims = UserClaimFactory.TransformInClaimByList(identityClaims.Claims as List<Claim>, true);
+
 
             UserToken token = new UserToken()
             {
@@ -112,10 +111,10 @@ namespace BLL.AccountsBLL
                 UserClaims = claims,
                 ClaimsIdentity = identityClaims
             };
-            
+
             return result;
         }
 
-      
+
     }
 }

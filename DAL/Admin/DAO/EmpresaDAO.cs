@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ContexBinds.EntityCore;
-using ContextBinds;
+﻿using ContexBinds.EntityCore;
 using DAL.Admin.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models.Admin;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DAL.Admin.DAO
 {

@@ -1,26 +1,11 @@
 ﻿@inherits LayoutComponentBase
-@using Microsoft.AspNetCore.Http
-@using BLL.Admin.Interfaces
-@using Models.Admin
 
-@inject IUsuarioBLL usuarioBLL
-@inject NavigationManager NavigationManager
-@inject IHttpContextAccessor httpContextAccessor
+<NavMenuViewComponent />
 
-<div class="sidebar">
-    <NavMenuViewComponent />
-</div>
-
-<div class="main">
-    <div class="top-row px-4">
-        <a href="http://exceptionbrasil.com.br" target="_blank">Exception Brasil</a>
-    </div>
-
-    <div class="content px-4">
-        @Body
-    </div>
+<div class="container">
+    @Body
 </div>
 
 @code {
-    
+
 }

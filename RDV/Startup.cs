@@ -1,6 +1,8 @@
 using BLL.AccountsBLL;
 using BLL.Admin.Interfaces;
 using BLL.Admin.Services;
+using BLL.Cadastros.CentroCustos.Interfaces;
+using BLL.Cadastros.CentroCustos.Services;
 using BLL.Despesas.Interfaces;
 using BLL.Despesas.Services;
 using BLL.Infra;
@@ -8,13 +10,14 @@ using ContexBinds.EntityCore;
 using ContextBinds;
 using DAL.Admin.DAO;
 using DAL.Admin.Interfaces;
+using DAL.Cadastros.CentroCustos.DAO;
+using DAL.Cadastros.CentroCustos.Interfaces;
 using DAL.Despesas.DAO;
 using DAL.Despesas.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +26,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Models.Admin;
 using Models.Admin.Settings;
-using RDV.Areas.Admin.Controllers;
 using System;
 using System.Text;
 
@@ -49,7 +51,7 @@ namespace RDV
 
                 options.UseSqlServer(ConecxaoAtiva.StringConnection());
             },
-                ServiceLifetime.Scoped
+                ServiceLifetime.Transient
             );
 
             //DbContext - Usado para a persistência dos DAL
@@ -57,7 +59,7 @@ namespace RDV
             {
                 options.UseSqlServer(ConecxaoAtiva.StringConnection());
             },
-               ServiceLifetime.Scoped
+               ServiceLifetime.Transient
            );
 
 
@@ -125,24 +127,31 @@ namespace RDV
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddHttpContextAccessor();
+
+
             #region Injeções de Dependencia
             //   services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddScoped<IUsuarioDAO, UsuarioDAO>();
-            services.AddScoped<IUsuarioBLL, UsuarioBLL>();
+            services.AddTransient<IUsuarioDAO, UsuarioDAO>();
+            services.AddTransient<IUsuarioBLL, UsuarioBLL>();
+            services.AddTransient<IUserClaimDAO, UserClaimDAO>();
+            services.AddTransient<IClaimsControleBLL, ClaimsControleBLL>();
+            services.AddTransient<IEmpresaDAO, EmpresaDAO>();
+            services.AddTransient<IEmpresaRegraDAO, EmpresaRegraDAO>();
+            services.AddTransient<IEmpresaBLL, EmpresaBLL>();
+            services.AddTransient<IUserTokenDAO, UserTokenDAO>();
+            services.AddTransient<ITokenGeradorBLL, TokenGeradorBLL>();
+            services.AddTransient<ITipoDespesaDAO, TipoDespesaDAO>();
+            services.AddTransient<ITipoDespesaService, TipoDespesaService>();
 
-            services.AddScoped<IUserClaimDAO, UserClaimDAO>();
-            services.AddScoped<IClaimsControleBLL, ClaimsControleBLL>();
+            services.AddTransient<IDespesaDAO, DespesaDAO>();
+            services.AddTransient<IDespesaHeaderDAO, DespesaHeaderDAO>();
+            services.AddTransient<IDespesaService, DespesaService>();
+            services.AddTransient<IDespesaService, DespesaService>();
 
-            services.AddScoped<IEmpresaDAO, EmpresaDAO>();
-            services.AddScoped<IEmpresaRegraDAO, EmpresaRegraDAO>();
-            services.AddScoped<IEmpresaBLL, EmpresaBLL>();      
+            services.AddTransient<ICentroCustoDAO, CentroCustoDAO>();
+            services.AddTransient<ICentroCustoService, CentroCustoService>();
 
-            services.AddScoped<IUserTokenDAO, UserTokenDAO>();
-            services.AddScoped<ITokenGeradorBLL, TokenGeradorBLL>();
-                   
-            services.AddScoped<ITipoDespesaDAO, TipoDespesaDAO>();
-            services.AddScoped<ITipoDespesaService, TipoDespesaService>();
             #endregion
 
         }
@@ -160,7 +169,7 @@ namespace RDV
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseCors(SefOriginsRequest);
             app.UseHttpsRedirection();
             app.UseStaticFiles();

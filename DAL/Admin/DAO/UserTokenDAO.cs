@@ -2,9 +2,6 @@
 using DAL.Admin.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models.Admin;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Admin.DAO

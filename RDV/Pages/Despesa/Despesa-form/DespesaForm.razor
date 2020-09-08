@@ -1,0 +1,85 @@
+﻿@page "/desp"
+
+
+@inject BLL.Despesas.Interfaces.ITipoDespesaService tipoDespesaBLL;
+@inject BLL.Cadastros.CentroCustos.Interfaces.ICentroCustoService centroCustoService;
+
+
+<style>
+    .mdc-select__anchor.mdc-ripple-upgraded {
+        width: 100%;
+    }
+</style>
+
+
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+            <MatSelect Label="Tipo de Despesa" @bind-Value="@_tipoDespesaId" HelperText="Escolha uma Despesa">
+                @foreach (var tipo in TiposDespesas)
+                {
+                    <MatOption TValue="int" Value="@tipo.Id" @onclick="async ()=> await GetDespesaById(tipo.Id)">@tipo.Descricao</MatOption>
+                }
+            </MatSelect>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+            <MatAutocompleteList TItem="CentroCusto"
+                                 Label="Centro de Custos"
+                                 CustomStringSelector="@((c)=> {
+                                                             if (c != null)
+                                                             {
+                                                                 return c.Codigo;
+                                                             }
+                                                             return "";
+                                                         })"
+                                 @bind-Value="CentroCusto"
+                                 Items="CentrosCustos.ToArray()"
+                                 FullWidth="true">
+                <ItemTemplate>
+                    <div class="mat-layout-grid-cell">
+                        <div class="mat-layout-grid-inner">
+                            <div class="mat-layout-grid-cell">@context.Codigo.Trim()</div>
+                            <div class="mat-layout-grid-cell"> @context.Descricao.Trim()</div>
+                            </div>
+                        </div>
+                   
+                </ItemTemplate>
+            </MatAutocompleteList>
+
+        </div>
+    </div>
+</div>
+<MatTextField @bind-Value="Despesa.Descricao" Label="Descrição" FullWidth="true" TextArea="true"></MatTextField>
+
+<MatTextField @bind-Value="Despesa.Valor" Label="Valor" FullWidth="true"></MatTextField>
+
+
+
+
+
+@code {
+    private int _tipoDespesaId;
+    private int _centroCustoId;
+
+    private Despesa Despesa = new Despesa();
+    private TipoDespesa TipoDespesa { get; set; }
+    private CentroCusto CentroCusto { get; set; }
+
+    private IList<TipoDespesa> TiposDespesas = new List<TipoDespesa>();
+    private IList<CentroCusto> CentrosCustos = new List<CentroCusto>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        TiposDespesas = await tipoDespesaBLL.ListarTudo();
+        CentrosCustos = await centroCustoService.ListarTudoAsync();
+    }
+
+
+    private async Task GetDespesaById(int Id)
+    {
+        TipoDespesa = await tipoDespesaBLL.GetByIdAsync(Id);
+
+        Despesa.TipoDespesa = TipoDespesa;
+    }
+}

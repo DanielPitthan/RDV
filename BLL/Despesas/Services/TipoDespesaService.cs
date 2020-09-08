@@ -2,7 +2,6 @@
 using DAL.Despesas.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models.Despesas;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +17,9 @@ namespace BLL.Despesas.Services
         {
             this.tipoDespesa = _tipoDespesaDAO;
         }
+
+
+
         public async Task<bool> AlterarTipoDespesa(TipoDespesa tipoDespesa)
         {
             return await this.tipoDespesa.UpdateAsync(tipoDespesa)
@@ -26,8 +28,9 @@ namespace BLL.Despesas.Services
 
         public async Task<bool> CriarTipoDespesa(TipoDespesa tipoDespesa)
         {
-            return await this.tipoDespesa.SaveAsync(tipoDespesa)
-                                          .ConfigureAwait(false);
+            return await this.tipoDespesa
+                .AddSysnc<TipoDespesa>(tipoDespesa)
+                .ConfigureAwait(false);
         }
 
         public async Task<bool> ExcluirTipoDespesa(TipoDespesa tipoDespesa)
@@ -42,7 +45,7 @@ namespace BLL.Despesas.Services
             return tipo;
         }
 
-     
+
         public async Task<IList<TipoDespesa>> ListarTudo()
         {
             var despesas = await this.tipoDespesa.GetAll().ToListAsync();

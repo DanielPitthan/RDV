@@ -1,10 +1,8 @@
 ﻿using Models.Admin;
 using Models.Cadastros;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Models.Despesas
 {
@@ -24,12 +22,12 @@ namespace Models.Despesas
         public virtual CentroCusto CentroCusto { get; set; }
         public string Motivo { get; set; }
 
-        public virtual  Usuario UsuarioInclusao { get; set; }
+        public virtual Usuario UsuarioInclusao { get; set; }
         public virtual Usuario UsuarioAprovacao { get; set; }
         public DateTime DataInclusao { get; set; }
         public DateTime? DataAprovacao { get; set; }
 
-        
+
 
     }
 }

@@ -1,9 +1,7 @@
 ﻿using Models.Admin;
 using Models.Admin.Json.Outputs;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 
 namespace Factorys.AccountFactorys
 {
@@ -14,12 +12,12 @@ namespace Factorys.AccountFactorys
         /// </summary>
         /// <param name="claim"></param>
         /// <returns></returns>
-        public static UserClaims TransformInClaim(Claim claim,bool ativo)
+        public static UserClaims TransformInClaim(Claim claim, bool ativo)
         {
             UserClaims claims = new UserClaims()
             {
                 ClaimType = claim.Type,
-                ClaimValue = claim.Value                ,
+                ClaimValue = claim.Value,
                 Ativo = ativo
             };
             return claims;
@@ -30,12 +28,12 @@ namespace Factorys.AccountFactorys
         /// </summary>
         /// <param name="claimsList"></param>
         /// <returns></returns>
-        public static IList<UserClaims> TransformInClaimByList (ICollection<Claim> claimsList,bool ativo)
+        public static IList<UserClaims> TransformInClaimByList(ICollection<Claim> claimsList, bool ativo)
         {
             IList<UserClaims> claims = new List<UserClaims>();
             foreach (var item in claimsList)
             {
-                claims.Add(TransformInClaim(item,ativo));
+                claims.Add(TransformInClaim(item, ativo));
             }
             return claims;
         }

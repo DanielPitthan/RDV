@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Models.Admin.ModelView;
 using System.Threading.Tasks;
-using Models.Admin.ModelView;
 
 namespace BLL.Admin.Interfaces
 {

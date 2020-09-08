@@ -4,14 +4,12 @@ using Factorys.AccountFactorys;
 using Models.Admin;
 using Models.Admin.Json.Outputs;
 using Models.Admin.Outputs.HttpResponses;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BLL.AccountsBLL
 {
-    public class EmpresaBLL:IEmpresaBLL
+    public class EmpresaBLL : IEmpresaBLL
     {
         private IEmpresaDAO _empresaDAO;
         private IEmpresaRegraDAO _empresaRegraDAO;
@@ -37,14 +35,14 @@ namespace BLL.AccountsBLL
         /// </summary>
         /// <param name="empresaJson"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> CriarEmpresa(EmpresaJson empresaJson)
+        public async Task<HttpResposta> CriarEmpresa(EmpresaJson empresaJson)
         {
             var located = this._empresaDAO.GetByCnpj(empresaJson.Cnpj);
             if (located != null)
             {
-                return new HttpResponse()
+                return new HttpResposta()
                 {
-                    Message = new string[]{ "Empresa já cadastrada" },
+                    Message = new string[] { "Empresa já cadastrada" },
                     Succeeded = false
                 };
             }
@@ -52,9 +50,9 @@ namespace BLL.AccountsBLL
             Empresa empresa = EmpresaFactory.GeraEmpresa(empresaJson);
             empresa.Ativa = true;
             await this._empresaDAO.SaveAsync(empresa);
-            return new HttpResponse()
+            return new HttpResposta()
             {
-                Message = new string[] {"Empresa cadastrada com sucesso"},
+                Message = new string[] { "Empresa cadastrada com sucesso" },
                 Succeeded = true
             };
         }
@@ -64,14 +62,14 @@ namespace BLL.AccountsBLL
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> BloquearEmpresa(int id)
+        public async Task<HttpResposta> BloquearEmpresa(int id)
         {
             Empresa empresa = this._empresaDAO.GetById(id);
             empresa.Ativa = false;
 
             bool resultado = await this._empresaDAO.SaveAsync(empresa);
 
-            return new HttpResponse()
+            return new HttpResposta()
             {
                 Message = new string[] { "Empresa bloqueada" },
                 Succeeded = resultado
@@ -82,14 +80,14 @@ namespace BLL.AccountsBLL
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> LiberarEmpresa(int id)
+        public async Task<HttpResposta> LiberarEmpresa(int id)
         {
             Empresa empresa = this._empresaDAO.GetById(id);
             empresa.Ativa = true;
 
             bool resultado = await this._empresaDAO.SaveAsync(empresa);
 
-            return new HttpResponse()
+            return new HttpResposta()
             {
                 Message = new string[] { "Empresa liberada" },
                 Succeeded = resultado
@@ -101,18 +99,18 @@ namespace BLL.AccountsBLL
         /// </summary>
         /// <param name="empresaRegra"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> AdcionarRegra(EmpresaRegra empresaRegra)
+        public async Task<HttpResposta> AdcionarRegra(EmpresaRegra empresaRegra)
         {
             EmpresaRegra regra = new EmpresaRegra()
             {
-                EmpresaId  = empresaRegra.EmpresaId,
+                EmpresaId = empresaRegra.EmpresaId,
                 Regra = empresaRegra.Regra,
                 Valor = empresaRegra.Valor
             };
 
             await this._empresaRegraDAO.Save(empresaRegra);
 
-            return new HttpResponse()
+            return new HttpResposta()
             {
                 Message = new string[] { "Regra Adicionada" },
                 Succeeded = true
@@ -124,7 +122,7 @@ namespace BLL.AccountsBLL
         /// </summary>
         /// <param name="empresaRegra"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> ExcluirRegra(EmpresaRegra empresaRegra)
+        public async Task<HttpResposta> ExcluirRegra(EmpresaRegra empresaRegra)
         {
             EmpresaRegra regra = new EmpresaRegra()
             {
@@ -135,7 +133,7 @@ namespace BLL.AccountsBLL
 
             await this._empresaRegraDAO.Delete(empresaRegra);
 
-            return new HttpResponse()
+            return new HttpResposta()
             {
                 Message = new string[] { "Regra Excluida" },
                 Succeeded = true

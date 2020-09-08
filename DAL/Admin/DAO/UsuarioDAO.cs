@@ -1,14 +1,10 @@
 ﻿using ContexBinds.EntityCore;
-using ContextBinds;
 using DAL.Admin.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models.Admin;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Admin.DAO
@@ -57,7 +53,7 @@ namespace DAL.Admin.DAO
         /// <param name="token"></param>
         /// <returns></returns>
         public async Task<bool> UpdateToken(UserToken token)
-        {           
+        {
             this.contexto.Entry(token).State = EntityState.Modified;
             var result = await contexto.SaveChangesAsync();
             return result > 0;
@@ -77,7 +73,7 @@ namespace DAL.Admin.DAO
         public async Task<Usuario> GetByIdAsync(int id)
         {
 
-            Usuario usuario =await  contexto.Usuario
+            Usuario usuario = await contexto.Usuario
                                     .Where(u => u.Id == id)
                                      .Include(u => u.UserToken)
                                      .Include(t => t.UserClaims)
@@ -93,7 +89,7 @@ namespace DAL.Admin.DAO
                 var usuario = await contexto.Usuario.Where(u => u.AspNetUsersId == id)
                                     .Include(u => u.UserToken)
                                     .Include(t => t.UserClaims)
-                                    .Include(e => e.Empresa)                                    
+                                    .Include(e => e.Empresa)
                                     .SingleOrDefaultAsync();
                 return usuario;
 
@@ -102,7 +98,7 @@ namespace DAL.Admin.DAO
             {
                 Console.WriteLine(ex.Message);
             }
-           
+
 
             return new Usuario();
         }

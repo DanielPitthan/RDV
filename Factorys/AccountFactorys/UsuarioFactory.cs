@@ -1,8 +1,6 @@
 ﻿using Models.Admin;
 using Models.Admin.Json.Outputs;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Factorys.AccountFactorys
 {
@@ -16,11 +14,11 @@ namespace Factorys.AccountFactorys
         public static UsuarioJsonResult GeraUsuarioJson(Usuario usuario)
         {
             UsuarioJsonResult usuarioJsonResult = new UsuarioJsonResult()
-            {                
+            {
                 Ativo = usuario.Ativo,
                 Id = usuario.Id,
                 Email = usuario.Email
-                
+
             };
             return usuarioJsonResult;
         }

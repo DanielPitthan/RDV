@@ -94,3 +94,28 @@ go
 alter table DespesaHeader add constraint FK_DespesaHeaderUsuarioInclusaoId Foreign Key (UsuarioInclusaoId) References Usuario (Id)
 go
 alter table DespesaHeader add constraint FK_DespesaHeaderUsuarioAprovacaoId Foreign Key (UsuarioAprovacaoId) References Usuario (Id)
+go
+
+go 
+Alter table Usuario Add Cpf nvarchar(11) null
+go 
+Alter Table Usuario Add IsLogged bit not null default 0
+go
+Alter Table Usuario Add ExpirationDateLogged datetime2 null 
+go
+Create table CentroCusto (
+	Id int identity not null primary key,
+	Codigo varchar(20),
+	Descricao varchar(517) not null default('')
+)
+go
+
+alter table Despesa add Constraint FK_Despesa_CentroCusto foreign key (CentroCustoId) References CentroCusto(Id)
+go
+Create index Ix_CentroCusto_001 on CentroCusto (Codigo, Descricao)
+go
+Create index Ix_CentroCusto_002 on CentroCusto (Descricao,Codigo)
+go
+alter  table CentroCusto add DataInclusao Datetime default(getdate())
+go
+alter table CentroCusto add Ativo Bit default(0)

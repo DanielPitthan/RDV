@@ -1,28 +1,18 @@
 ﻿using ContexBinds.EntityCore;
+using DAL.DAOBase;
 using DAL.Despesas.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models.Despesas;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Despesas.DAO
 {
-    public class TipoDespesaDAO : ITipoDespesaDAO
+    public class TipoDespesaDAO : DataAccess, ITipoDespesaDAO
     {
-        private readonly ContextBind contexto;
+        private ContextBind contexto;
 
-        public TipoDespesaDAO(ContextBind _contexto)
+        public TipoDespesaDAO(ContextBind _context) : base(_context)
         {
-            this.contexto = _contexto;
-        }
-
-        public async Task<bool> DeleteAsync(TipoDespesa tipoDespesa)
-        {
-            this.contexto.TipoDespesa.Remove(tipoDespesa);
-            var rowsAffecteds = await this.contexto.SaveChangesAsync().ConfigureAwait(false);
-            return rowsAffecteds > 0;
+            this.contexto = _context;
         }
 
         public DbSet<TipoDespesa> GetAll()
@@ -30,18 +20,6 @@ namespace DAL.Despesas.DAO
             return this.contexto.TipoDespesa;
         }
 
-        public async Task<bool> SaveAsync(TipoDespesa tipoDespesa)
-        {
-            this.contexto.TipoDespesa.Add(tipoDespesa);
-            var rowsAffecteds = await this.contexto.SaveChangesAsync().ConfigureAwait(false);
-            return rowsAffecteds > 0;
-        }
 
-        public async Task<bool> UpdateAsync(TipoDespesa tipoDespesa)
-        {
-            this.contexto.Entry(tipoDespesa).State = EntityState.Modified;
-            var rowsAffecteds = await contexto.SaveChangesAsync().ConfigureAwait(false);
-            return rowsAffecteds > 0;
-        }
     }
 }

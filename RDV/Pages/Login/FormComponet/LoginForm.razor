@@ -1,32 +1,33 @@
-﻿@page "/loginForm"
-
-@using Models.Admin.ModelView;
+﻿
+@using RDV.Helpers;
 @using Models.Admin.Outputs.HttpResponses;
+@using Models.Admin.ModelView
+@using BLL.Admin.Interfaces
 
-
-@inject BLL.Admin.Interfaces.IUsuarioBLL usuarioBLL
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+@inject IUsuarioBLL usuarioBLL
+
 
 
 <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
-    <div class="border rounded p-5">       
+    <div class="border rounded p-5">
         <div class="col col-12">
             <h2>Credenciais para acesso</h2>
         </div>
         <hr />
         <p>Insira seus dados para ter acesso ao sistema.</p>
         <div class="input-group mb-3">
-            <input type="text" placeholder="Digite seu login de acesso" class="form-control" @bind-value="Login.Email" />
+            <input type="text" placeholder="Digite seu login de acesso" class="form-control" @bind-value="Login.Email" @onclick="LimpaAviso" />
         </div>
         <div class="input-group mb-3">
-            <input type="password" placeholder="Digite sua senha" class="form-control" @bind-value="Login.Password" />
+            <input type="password" placeholder="Digite sua senha" class="form-control" @bind-value="Login.Password" @onclick="LimpaAviso" />
         </div>
         <div class="row">
             <input type="submit" value="Acessar" class="btn btn-primary btn-block blue" @onclick="EfetuarLogin" />
         </div>
         <br />
-        <div id="infoLogin" class="row">
+        <div id="infoLogin" class="row @cssInfoLogin">
         </div>
     </div>
 </div>
@@ -36,20 +37,31 @@
 
     private Login Login = new Login();
 
-    private HttpResponse httpResponse;
+    private HttpResposta httpResponse;
     private static string alertText;
     private static string alertClass;
     private string loginControll;
+    private string cssInfoLogin = "";
 
 
     private async Task EfetuarLogin()
     {
 
 
+        var urlLogin = AppSettingsJson.GetConfig("UrlLogin").Value;
         loginControll = await JSRuntime
-                                   .InvokeAsync<string>("loginControll.efetuarLogin", Login.Email, Login.Password, "https://localhost:44370/api/usuarios/login")
-                                   .ConfigureAwait(false);
+                               .InvokeAsync<string>("loginControll.efetuarLogin", Login.Email, Login.Password, urlLogin)
+                               .ConfigureAwait(false);
+
+        cssInfoLogin = "";
+
     }
+
+    private void LimpaAviso()
+    {
+        cssInfoLogin = "ocultar";
+    }
+
 
 }
 

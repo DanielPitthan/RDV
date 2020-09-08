@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ContexBinds.EntityCore;
-using ContextBinds;
+﻿using ContexBinds.EntityCore;
 using DAL.Admin.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models.Admin;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DAL.Admin.DAO
 {
@@ -26,7 +23,7 @@ namespace DAL.Admin.DAO
             {
                 this._contexto.EmpresaRegra.Remove(regra);
                 var result = await this._contexto.SaveChangesAsync();
-                return result>0;
+                return result > 0;
 
             }
             catch (DbUpdateException e)

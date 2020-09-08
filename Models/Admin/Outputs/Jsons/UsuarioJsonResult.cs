@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Models.Admin.Json.Outputs
+﻿namespace Models.Admin.Json.Outputs
 {
     public class UsuarioJsonResult
     {

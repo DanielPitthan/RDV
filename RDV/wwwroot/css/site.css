@@ -1,4 +1,31 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
+
+
+/*Personalização cliente*/
+
+.font-cliente {
+    font-family: 'Kanit', sans-serif;
+}
+
+.imagem-cliente {
+    background-image: url(../_content/img/background/ASRlogo_white.svg);
+}
+
+
+.background-cliente {
+    background:  linear-gradient(160deg, rgba(25,219,227,0.4) 0%, rgba(25,168,227,0.5) 49%, rgba(25,29,227,0.9) 100%) 0 0/cover no-repeat,url(../_content/img/background/escritorio.jpg) 0 0/cover no-repeat;   
+    background-size: cover;
+    background-position-y: center;
+}
+
+.background-jumbotrom {
+    background: linear-gradient(94deg, rgba(227,25,41,1) 0%, rgba(230,36,74,1) 21%, rgba(181,51,61,0.9290091036414566) 51%, rgba(230,36,74,1) 74%, rgba(227,25,41,1) 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -14,108 +41,6 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
-app {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.top-row {
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-}
-
-.main {
-    flex: 1;
-}
-
-    .main .top-row {
-        background-color: #f7f7f7;
-        border-bottom: 1px solid #d6d5d5;
-        justify-content: flex-end;
-    }
-
-        .main .top-row > a, .main .top-row .btn-link {
-            white-space: nowrap;
-            margin-left: 1.5rem;
-        }
-
-        .main .top-row a:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-}
-
-    .sidebar .top-row {
-        background-color: rgba(0,0,0,0.4);
-    }
-
-    .sidebar .navbar-brand {
-        font-size: 1.1rem;
-    }
-
-    .sidebar .oi {
-        width: 2rem;
-        font-size: 1.1rem;
-        vertical-align: text-top;
-        top: -2px;
-    }
-
-    .sidebar .nav-item {
-        font-size: 0.9rem;
-        padding-bottom: 0.5rem;
-    }
-
-        .sidebar .nav-item:first-of-type {
-            padding-top: 1rem;
-        }
-
-        .sidebar .nav-item:last-of-type {
-            padding-bottom: 1rem;
-        }
-
-        .sidebar .nav-item a {
-            color: #d7d7d7;
-            border-radius: 4px;
-            height: 3rem;
-            display: flex;
-            align-items: center;
-            line-height: 3rem;
-        }
-
-            .sidebar .nav-item a.active {
-                background-color: rgba(255,255,255,0.25);
-                color: white;
-            }
-
-            .sidebar .nav-item a:hover {
-                background-color: rgba(255,255,255,0.1);
-                color: white;
-            }
-
-.content {
-    padding-top: 1.1rem;
-}
-
-.navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
-}
-
-.invalid {
-    outline: 1px solid red;
-}
-
-.validation-message {
-    color: red;
-}
 
 #blazor-error-ui {
     background: lightyellow;
@@ -136,50 +61,7 @@ app {
         top: 0.5rem;
     }
 
-@media (max-width: 767.98px) {
-    .main .top-row:not(.auth) {
-        display: none;
-    }
 
-    .main .top-row.auth {
-        justify-content: space-between;
-    }
-
-    .main .top-row a, .main .top-row .btn-link {
-        margin-left: 0;
-    }
-}
-
-@media (min-width: 768px) {
-    app {
-        flex-direction: row;
-    }
-
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
-    }
-
-    .main .top-row {
-        position: sticky;
-        top: 0;
-    }
-
-    .main > div {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
-
-    .navbar-toggler {
-        display: none;
-    }
-
-    .sidebar .collapse {
-        display: block;
-    }
-}
 
 .meia-tela {
     top: 0;
@@ -188,16 +70,13 @@ app {
     width: 100%;
 }
 
-.background-cliente {
-    background: linear-gradient(rgba(255,255,255,.8),rgba(255,255,255,.8)90%) 0 0/cover no-repeat,url(../_content/img/background/escritorio.jpg) 0 0/cover no-repeat;
-    background-size: cover;
-    background-position-y: center;
-}
 
-.background-jumbotrom {
-    background: linear-gradient(132deg, rgba(162,154,154,0.9) 0%, rgba(62,56,52,.9) 90%),url(../_content/img/background/background-tecnologies.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
+/*
+    Tamanho das fontes
+
+*/
+.font-6 {
+    font-size: 8pt;
 }
 
 .font-8 {
@@ -213,6 +92,9 @@ app {
     font-size: 12pt;
 }
 
+.font-14 {
+    font-size: 14pt;
+}
 
 .font-16 {
     font-size: 16pt;
@@ -220,6 +102,14 @@ app {
 
 .font-18 {
     font-size: 18pt;
+}
+
+.font-20 {
+    font-size: 20pt;
+}
+
+.font-22 {
+    font-size: 22pt;
 }
 
 .font-24 {
@@ -230,25 +120,56 @@ app {
     font-size: 26pt;
 }
 
+.font-28 {
+    font-size: 28pt;
+}
+
 .font-30 {
     font-size: 30pt;
+}
+
+.font-32 {
+    font-size: 32pt;
+}
+
+.font-34 {
+    font-size: 34pt;
+}
+
+.font-36 {
+    font-size: 36pt;
+}
+
+.font-38 {
+    font-size: 38pt;
+}
+
+.font-40 {
+    font-size: 40pt;
+}
+
+.font-42 {
+    font-size: 42pt;
+}
+
+.font-44 {
+    font-size: 44pt;
+}
+
+.font-46 {
+    font-size: 46pt;
+}
+
+.font-48 {
+    font-size: 48pt;
 }
 
 .font-50 {
     font-size: 50pt;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
 
-.font-cliente {
-    font-family: 'Kanit', sans-serif;
-}
 
-.imagem-cliente {
-    background-image: url(../_content/img/background/ASRlogo_white.svg);
-}
 
 .iconify {
     line-height: 48px;
@@ -271,4 +192,46 @@ app {
 
 .ocultar {
     display: none;
+}
+
+.img-brand {
+    width: 140px;
+    height: 40px;
+    min-height: 10%;
+    min-width: 10%;
+    margin: 0;
+}
+
+
+
+
+.drag-drop-zone {
+    border: 1px dashed #0000005c;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #706cc31f;
+    box-shadow: inset 0 0 8px rgba(112, 45, 169, 0.21);
+    color: #a7a7a7;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 1.5rem 0 2rem 0;
+    position: relative;
+}
+
+    .drag-drop-zone:hover {
+        background-color: #f5f5f5;
+    }
+
+    .drag-drop-zone input[type=file] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+a.nav-link.active {
+    margin-right: 8em;
 }

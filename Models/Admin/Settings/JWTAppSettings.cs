@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Models.Admin.Settings
+﻿namespace Models.Admin.Settings
 {
     public class JWTAppSettings
     {

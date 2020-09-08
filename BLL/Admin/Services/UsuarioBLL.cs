@@ -1,25 +1,24 @@
 ﻿using BLL.Admin.Interfaces;
 using DAL.Admin.Interfaces;
+using Factorys.AccountFactorys;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Models.Admin;
-using Models.Admin.Json;
+using Models.Admin.Json.Outputs;
 using Models.Admin.ModelView;
-using Models.Admin.Outputs;
+using Models.Admin.Outputs.HttpResponses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using Models.Admin.Outputs.HttpResponses;
-using Models.Admin.Json.Outputs;
-using Factorys.AccountFactorys;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace BLL.Admin.Services
 {
     public class UsuarioBLL : IUsuarioBLL
     {
+
         private IUsuarioDAO _usuarioDAO;
         private UserManager<ApplicationUser> _userManager;
         private SignInManager<ApplicationUser> _signInManager;
@@ -28,6 +27,8 @@ namespace BLL.Admin.Services
         private IEmpresaDAO _empresaDAO;
         private IEmpresaRegraDAO _empresaRegraDAO;
 
+
+        #region construtor
         public UsuarioBLL(IUsuarioDAO usuarioDAO,
                             UserManager<ApplicationUser> userManager,
                             SignInManager<ApplicationUser> signInManager,
@@ -45,7 +46,7 @@ namespace BLL.Admin.Services
             this._empresaDAO = empresaDAO;
             this._empresaRegraDAO = empresaRegraDAO;
         }
-
+        #endregion
 
 
 
@@ -55,7 +56,7 @@ namespace BLL.Admin.Services
         /// </summary>
         /// <param name="registerUser"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> CriarUsuarioSimplificado(Login registerUser)
+        public async Task<HttpResposta> CriarUsuarioSimplificado(Login registerUser)
         {
             //Cria o usuário
             var newUser = new ApplicationUser
@@ -67,12 +68,12 @@ namespace BLL.Admin.Services
             };
 
             //Registra o usuário
-            var result = await _userManager.CreateAsync(newUser, registerUser.Password);          
+            var result = await _userManager.CreateAsync(newUser, registerUser.Password);
             var userCreated = await _userManager.FindByEmailAsync(registerUser.Email);
 
             if (!result.Succeeded)
             {
-                return new HttpResponse()
+                return new HttpResposta()
                 {
                     Succeeded = result.Succeeded,
                     Message = result.Errors.Select(e => e.Description),
@@ -106,9 +107,9 @@ namespace BLL.Admin.Services
             await _usuarioDAO.SaveAsync(usuario);
 
             //Libera o usuário             
-            await this.UnlockLockUser(registerUser.Email);          
+            await this.UnlockLockUser(registerUser.Email);
 
-            return new HttpResponse()
+            return new HttpResposta()
             {
                 Succeeded = result.Succeeded,
                 Message = result.Errors.Select(e => e.Description),
@@ -121,7 +122,7 @@ namespace BLL.Admin.Services
         /// </summary>
         /// <param name="registerUser"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> CriarUsuario(Login registerUser)
+        public async Task<HttpResposta> CriarUsuario(Login registerUser)
         {
             //Cria o usuário
             var newUser = new ApplicationUser
@@ -138,7 +139,7 @@ namespace BLL.Admin.Services
 
             if (!result.Succeeded)
             {
-                return new HttpResponse()
+                return new HttpResposta()
                 {
                     Succeeded = result.Succeeded,
                     Message = result.Errors.Select(e => e.Description),
@@ -178,7 +179,7 @@ namespace BLL.Admin.Services
             //Autentica o usuário na aplicação
             await _signInManager.SignInAsync(newUser, false);
 
-            return new HttpResponse()
+            return new HttpResposta()
             {
                 Succeeded = result.Succeeded,
                 Message = result.Errors.Select(e => e.Description),
@@ -191,7 +192,7 @@ namespace BLL.Admin.Services
         /// </summary>
         /// <param name="userInfo"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> EfetuarLogin(Login userInfo)
+        public async Task<HttpResposta> EfetuarLoginApi(Login userInfo)
         {
             //tenta  Autentica o usuário
             SignInResult signInResult;
@@ -203,7 +204,7 @@ namespace BLL.Admin.Services
             }
             catch (Exception ex)
             {
-                return new HttpResponse()
+                return new HttpResposta()
                 {
                     Succeeded = false,
                     Message = new string[] { "Erro ao efetuar o login" },
@@ -218,7 +219,7 @@ namespace BLL.Admin.Services
 
             if (!signInResult.Succeeded)
             {
-                return new HttpResponse()
+                return new HttpResposta()
                 {
                     Succeeded = false,
                     Message = new string[] { "Erro ao efetuar o login" },
@@ -238,7 +239,7 @@ namespace BLL.Admin.Services
             if (userCreated.LockoutEnabled)
             {
 
-                return new HttpResponse()
+                return new HttpResposta()
                 {
                     Succeeded = signInResult.Succeeded,
                     Message = new string[] { "Erro ao efetuar o login" },
@@ -287,7 +288,7 @@ namespace BLL.Admin.Services
 
 
 
-            return new HttpResponse()
+            return new HttpResposta()
             {
                 Succeeded = signInResult.Succeeded,
                 Message = new string[] { "Login efetuado com sucesso." },
@@ -295,12 +296,87 @@ namespace BLL.Admin.Services
                 statusText = "Login efetuado com sucesso.",
                 Identities = resultToken.ClaimsIdentity,
                 ClaimsPrincipal = new ClaimsPrincipal(resultToken.ClaimsIdentity),
-                RedirectTo = "/mainApp"
+                RedirectTo = "/"
 
             };
 
         }
 
+
+
+        public async Task<HttpResposta> EfetuarLoginApp(Login userInfo)
+        {
+            //tenta  Autentica o usuário
+            SignInResult signInResult;
+            try
+            {
+
+                signInResult = await _signInManager.PasswordSignInAsync(userInfo.Email, userInfo.Password,
+                                      isPersistent: true, lockoutOnFailure: false).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new HttpResposta()
+                {
+                    Succeeded = false,
+                    Message = new string[] { "Erro ao efetuar o login" },
+                    body = new string[] { "{succeeded:false}" },
+                    statusText = "Login inválido",
+                    RedirectTo = ""
+
+                };
+            }
+
+
+
+            if (!signInResult.Succeeded)
+            {
+                return new HttpResposta()
+                {
+                    Succeeded = false,
+                    Message = new string[] { "Erro ao efetuar o login" },
+                    body = new string[] { "{succeeded:false}" },
+                    statusText = "Login inválido",
+                    RedirectTo = ""
+
+                };
+            }
+            //Recupera o usuário AspNet
+            var userCreated = await _userManager.FindByEmailAsync(userInfo.Email);
+
+            //Recupera o cadastro do usuário
+            Usuario usuario = await _usuarioDAO.GetByAspNetIdAsync(userCreated.Id);
+
+            //Validação se efetuou o login com sucesso
+            if (userCreated.LockoutEnabled)
+            {
+
+                return new HttpResposta()
+                {
+                    Succeeded = signInResult.Succeeded,
+                    Message = new string[] { "Erro ao efetuar o login" },
+                    body = new string[] { "{succeeded:false}" },
+                    statusText = "Login inválido",
+                    RedirectTo = ""
+
+                };
+            }
+
+
+            usuario.ExpirationDateLogged = DateTime.Now.AddHours(48);
+            usuario.IsLogged = true;
+            await this._usuarioDAO.UpdateAsync(usuario);
+
+            return new HttpResposta()
+            {
+                Succeeded = signInResult.Succeeded,
+                Message = new string[] { "Login efetuado com sucesso." },
+                statusText = "Login efetuado com sucesso.",
+                RedirectTo = "/"
+
+            };
+
+        }
 
         public async Task<bool> UsuarioEstaLogado(Usuario usuario)
         {
@@ -382,12 +458,23 @@ namespace BLL.Admin.Services
             return await UnlockLockUser(usuario.Email);
         }
 
-        public async Task<Usuario> GetUsuarioPeloEmail(string email)
+        public async Task<Usuario> GetUsuarioPeloEmailAsync(string email)
         {
-            var usuario = await this._usuarioDAO.ListAll()
-                                            .Where(u => u.Email == email)
-                                            .SingleOrDefaultAsync();
-            return usuario;
+            var usuario = from u in this._usuarioDAO.ListAll()
+                          where u.Email == email
+                          select u;
+
+            return await usuario.SingleOrDefaultAsync();
+
+
+        }
+        public Usuario GetUsuarioPeloEmail(string email)
+        {
+            var usuario = from u in this._usuarioDAO.ListAll()
+                          where u.Email == email
+                          select u;
+
+            return usuario.SingleOrDefault();
 
 
         }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Models.Cadastros
 {
@@ -16,6 +14,9 @@ namespace Models.Cadastros
 
         [DisplayName("Descrição")]
         public string Descricao { get; set; }
+
+        public DateTime DataInclusao { get; set; }
+        public bool Ativo { get; set; }
 
     }
 }

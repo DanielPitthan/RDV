@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,9 +10,10 @@ namespace BLL.Admin.Services
 
         public static string CryptographyText(string normalText)
         {
-            try{
+            try
+            {
 
-              // Create a new instance of the Rijndael
+                // Create a new instance of the Rijndael
                 // class.  This generates a new key and initialization 
                 // vector (IV).
                 using (Rijndael rijndael = Rijndael.Create())
@@ -33,7 +33,7 @@ namespace BLL.Admin.Services
 
         public static bool Validate(string nomalText, string hashedText)
         {
-            var textHashed = CryptographyText(nomalText);            
+            var textHashed = CryptographyText(nomalText);
             return textHashed == hashedText;
         }
 
